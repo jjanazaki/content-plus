@@ -1,0 +1,287 @@
+document.addEventListener("DOMContentLoaded", () => {
+
+  // ============================================
+  // ⚙️ الإعدادات (الكوبون والمنتجات وإشعارات المبيعات)
+  // ============================================
+  const CONFIG = {
+    coupon: {
+      code: "بلس",
+      label: "عرض خاص لك",
+      percent: "%30",
+      desc: "خصم يصل إلى 30% على طلبك",
+      waitMs: 20000 // يظهر بعد 20 ثانية من دخول العميل
+    },
+    targets: [
+      { path: "/jZRNBja", target: 3452 },
+      { path: "/onRwqPZ", target: 2534 },
+      { path: "/gZZqqOb", target: 1244 },
+      { path: "/wGnvAx",  target: 2874 },
+      { path: "/BrXrRNN", target: 2457 }
+    ],
+    proofs: [
+      { name: "تصميم متجر سلة احترافي", img: "https://cdn.salla.sa/vzPvx/2c6ca286-0104-4ed8-a754-74a06b9aabb7-1000x1000-57z7xkkKX7m67nkNpVj66hxkKbBVO9MgcsFHO9nG.jpg" },
+      { name: "تفعيل تمارا للمتاجر", img: "https://cdn.salla.sa/vzPvx/75c44548-f22f-4c0c-8a29-96ed25ef8e4d-800x1000-rTArid0BDQqJvN4g4AM6xY518GOZoWH4Kdkj2z8U.jpg" },
+      { name: "وثيقة العمل الحر", img: "https://cdn.salla.sa/vzPvx/64423c3d-0b34-4822-8c2d-95e519ed7ea1-1000x1000-osnDECQGxsWasFiFuFEq0TzrjPxDUJuV7b9SqU23.jpg" }
+    ]
+  };
+
+  // ============================================
+  // 🎨 أكواد التصميم (الكوبون والإشعارات)
+  // ============================================
+  const style = document.createElement("style");
+  style.textContent = `
+    /* شريط الكوبون العلوي */
+    #mk-coupon-bar{position:fixed;top:0;left:0;right:0;z-index:9998;background:linear-gradient(90deg,#8b5cf6,#06b6d4);padding:10px 14px;display:none;align-items:center;justify-content:center;gap:8px;font-family:inherit;font-size:14px;color:#fff;box-shadow:0 4px 10px rgba(139,92,246,0.2);}
+    #mk-coupon-bar .cb-code{background:rgba(255,255,255,0.2);border:1px dashed rgba(255,255,255,.6);padding:3px 12px;border-radius:8px;color:#fff;font-weight:900;letter-spacing:1px;}
+    #mk-coupon-bar .cb-close{background:none;border:none;color:rgba(255,255,255,.8);cursor:pointer;font-size:18px;margin-right:auto;line-height:1;}
+    @media(max-width:480px){#mk-coupon-bar{font-size:12px;gap:6px;}}
+
+    /* إشعار المبيعات (Social Proof) */
+    #mk-sp-notify{position:fixed;bottom:90px;right:14px;z-index:9997;background:#fff;padding:12px 14px;border-radius:14px;display:flex;align-items:center;gap:10px;box-shadow:0 4px 16px rgba(0,0,0,.12);width:280px;opacity:0;transform:translateX(110%);transition:opacity .3s ease,transform .3s ease;pointer-events:none;border-right:4px solid #8b5cf6;font-family:inherit;}
+    #mk-sp-notify.show{opacity:1;transform:translateX(0);}
+    @media(max-width:480px){#mk-sp-notify{width:250px;right:10px; bottom:100px;}}
+    #mk-sp-notify .sp-thumb{width:44px;height:44px;border-radius:8px;overflow:hidden;flex-shrink:0;}
+    #mk-sp-notify .sp-thumb img{width:100%;height:100%;object-fit:cover;}
+    #mk-sp-notify .sp-dot{width:7px;height:7px;background:#22c55e;border-radius:50%;flex-shrink:0;}
+    #mk-sp-notify .sp-label{font-size:11px;font-weight:700;color:#8b5cf6;display:flex;align-items:center;gap:4px;margin-bottom:3px;}
+    #mk-sp-notify .sp-title{font-size:13px;font-weight:800;color:#1a1a2e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    #mk-sp-notify .sp-sub{font-size:11px;color:#888;margin-top:2px;}
+
+    /* نافذة الكوبون المنبثقة */
+    #mk-coupon-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99999;display:none;align-items:center;justify-content:center;}
+    #mk-coupon-popup{background:#ffffff;border-radius:20px;overflow:hidden;max-width:360px;width:92%;position:relative;box-shadow:0 10px 40px rgba(0,0,0,0.1);border:1px solid #f3f4f6;}
+    #mk-coupon-popup::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,#8b5cf6,#06b6d4);}
+    #mk-coupon-popup .cp-close{position:absolute;top:14px;left:14px;background:#f3f4f6;border:none;color:#9ca3af;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:background 0.2s;}
+    #mk-coupon-popup .cp-close:hover{background:#e5e7eb;color:#4b5563;}
+    #mk-coupon-popup .cp-body{padding:30px 24px 24px;text-align:center;}
+    #mk-coupon-popup .cp-percent{font-size:56px;font-weight:900;background:linear-gradient(135deg,#8b5cf6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;display:block;margin-bottom:8px;font-family:inherit;}
+    #mk-coupon-popup .cp-off{color:#4b5563;font-size:15px;font-weight:800;display:block;margin-bottom:24px;font-family:inherit;}
+    #mk-coupon-popup .cp-code-box{background:#fff;border:2px dashed #d1d5db;border-radius:12px;padding:12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+    #mk-coupon-popup .cp-code{font-size:20px;font-weight:900;color:#1f2937;letter-spacing:2px;font-family:inherit;}
+    #mk-coupon-popup .cp-btn{background:linear-gradient(135deg,#8b5cf6,#06b6d4);color:#fff;border:none;width:100%;padding:16px;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 8px 20px rgba(139,92,246,0.3);font-family:inherit;margin-bottom:8px;transition:all 0.2s;}
+    #mk-coupon-popup .cp-skip{color:#9ca3af;font-size:13px;cursor:pointer;background:none;border:none;width:100%;text-align:center;font-family:inherit;}
+
+    /* أزرار النسخ */
+    .mk-copy-btn{background:#f3f4f6;color:#4b5563;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all 0.2s;}
+    .mk-copy-btn.copied{background:#22c55e;color:#fff;}
+    #mk-coupon-bar .mk-copy-btn{background:#fff;color:#8b5cf6;}
+    #mk-coupon-bar .mk-copy-btn.copied{background:#22c55e;color:#fff;}
+  `;
+  document.head.appendChild(style);
+
+  const rand = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+
+  // ============================================
+  // 1️⃣ عداد المشتريات
+  // ============================================
+  try {
+    const prod = CONFIG.targets.find(p => location.pathname.includes(p.path));
+    if (prod) {
+      const ob = new MutationObserver((_, obs) => {
+        const lbl = [...document.querySelectorAll("div,span,p,strong")]
+          .find(e => (e.textContent||"").trim() === "عدد مرات الشراء");
+        if (lbl?.nextElementSibling && /^\d+$/.test(lbl.nextElementSibling.textContent?.trim())) {
+          const el = lbl.nextElementSibling, t0 = performance.now();
+          (function tick(now) {
+            const t = Math.min(1, (now - t0) / 1200);
+            el.textContent = Math.floor(1 + (prod.target - 1) * (1 - Math.pow(1-t, 3)));
+            t < 1 ? requestAnimationFrame(tick) : (el.textContent = prod.target);
+          })(t0);
+          obs.disconnect();
+        }
+      });
+      ob.observe(document.body, { childList: true, subtree: true });
+      setTimeout(() => ob.disconnect(), 8000);
+    }
+  } catch(e) {}
+
+  // ============================================
+  // 2️⃣ إشعار المبيعات (Social Proof)
+  // ============================================
+  try {
+    const sp = document.createElement("div");
+    sp.id = "mk-sp-notify";
+    document.body.appendChild(sp);
+    let vBase = rand(185,210), vCur = vBase, vDir = 1, vStep = 0, tog = 0;
+
+    function showSP() {
+      if (tog === 0) {
+        if (vCur >= vBase + rand(15,25)) vDir = -1;
+        if (vCur <= vBase - rand(5,10)) vDir = 1;
+        vCur += vDir * rand(1,3); vStep++;
+        if (vStep >= rand(4,7)) { vStep=0; vBase=rand(180,228); vCur=vBase; vDir=1; }
+        sp.innerHTML = `<span class="sp-dot"></span><div><div class="sp-label">مباشر الآن</div><div class="sp-title">${Math.max(180,Math.min(230,vCur))} شخص في المتجر</div><div class="sp-sub">🔥 نشاط مرتفع</div></div>`;
+      } else {
+        const s = CONFIG.proofs[rand(0, CONFIG.proofs.length-1)];
+        const t = ["للتو","منذ دقيقتين","منذ 4 دقائق","منذ 8 دقائق"][rand(0,3)];
+        sp.innerHTML = `<div class="sp-thumb"><img src="${s.img}" alt="${s.name}" loading="lazy" decoding="async"></div><div><div class="sp-label"><span class="sp-dot"></span> تم الشراء</div><div class="sp-title">${s.name}</div><div class="sp-sub">⏱️ ${t}</div></div>`;
+      }
+      tog = 1 - tog;
+      sp.classList.add("show");
+      setTimeout(() => { sp.classList.remove("show"); setTimeout(showSP, rand(40000,65000)); }, rand(5000,7000));
+    }
+    setTimeout(showSP, rand(15000,25000));
+  } catch(e) {}
+
+  // ============================================
+  // 3️⃣ نافذة الكوبون والشريط العلوي 
+  // ============================================
+  try {
+    const overlay = document.createElement("div");
+    overlay.id = "mk-coupon-overlay";
+    overlay.innerHTML = `
+      <div id="mk-coupon-popup">
+        <button class="cp-close" id="mk-cp-x">✕</button>
+        <div class="cp-body">
+          <span class="cp-percent">${CONFIG.coupon.percent}</span>
+          <span class="cp-off">${CONFIG.coupon.desc}</span>
+          <div class="cp-code-box">
+            <span class="cp-code">${CONFIG.coupon.code}</span>
+            <button class="mk-copy-btn" id="mk-cp-copy1">نسخ</button>
+          </div>
+          <button class="cp-btn" id="mk-cp-ok">تطبيق الخصم</button>
+          <button class="cp-skip" id="mk-cp-no">تخطي العرض</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+
+    const cbar = document.createElement("div");
+    cbar.id = "mk-coupon-bar";
+    cbar.innerHTML = `
+      <span>🎁 ${CONFIG.coupon.desc} — الكود:</span>
+      <span class="cb-code">${CONFIG.coupon.code}</span>
+      <button class="mk-copy-btn" id="mk-cp-copy2">نسخ</button>
+      <button class="cb-close" id="mk-cb-x">✕</button>`;
+    document.body.appendChild(cbar);
+
+    const closePopupAndShowBar = () => {
+      overlay.style.display = "none";
+      cbar.style.display = "flex";
+    };
+
+    const closeEverything = () => {
+      overlay.style.display = "none";
+      cbar.style.display = "none";
+    };
+
+    const copyCode = btn => {
+      navigator.clipboard?.writeText(CONFIG.coupon.code).catch(()=>{});
+      btn.textContent = "تم ✓";
+      btn.classList.add("copied");
+      setTimeout(() => { closeEverything(); }, 600);
+    };
+
+    const applyDiscount = btn => {
+      navigator.clipboard?.writeText(CONFIG.coupon.code).catch(()=>{});
+      btn.textContent = "تم تطبيق الخصم ✓";
+      btn.style.background = "#22c55e"; 
+      btn.style.color = "#fff";
+      btn.style.boxShadow = "none";
+      setTimeout(() => { closeEverything(); }, 800);
+    };
+
+    document.getElementById("mk-cp-x").onclick = closePopupAndShowBar;
+    document.getElementById("mk-cp-no").onclick = closePopupAndShowBar;
+    overlay.onclick = e => { if (e.target === overlay) closePopupAndShowBar(); };
+    
+    document.getElementById("mk-cp-ok").onclick = function(){ applyDiscount(this); };
+    document.getElementById("mk-cp-copy1").onclick = function(){ copyCode(this); };
+    document.getElementById("mk-cp-copy2").onclick = function(){ copyCode(this); };
+    document.getElementById("mk-cb-x").onclick = () => { cbar.style.display = "none"; };
+
+    if (!sessionStorage.getItem("mk_c")) {
+      setTimeout(() => {
+        overlay.style.display = "flex";
+        sessionStorage.setItem("mk_c", "1");
+      }, CONFIG.coupon.waitMs);
+    }
+  } catch(e) {}
+
+  // ============================================
+  // 4️⃣ زر الواتساب الذكي (المتمدد - توسيط مريح)
+  // ============================================
+  try {
+    const waNumber = "966501577963"; 
+
+    const waStyle = document.createElement("style");
+    waStyle.textContent = `
+      #mk-wa-widget {
+        position: fixed;
+        bottom: 25px;
+        left: 20px;
+        height: 60px;
+        width: 60px;
+        background: #25D366;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+        z-index: 999999;
+        transition: width 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        direction: rtl; /* الأيقونة على اليمين */
+        text-decoration: none;
+      }
+      #mk-wa-widget .mk-wa-icon {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: #fff;
+      }
+      #mk-wa-widget .mk-wa-icon svg { width: 34px; height: 34px; fill: currentColor; }
+      #mk-wa-widget .mk-wa-text {
+        flex-grow: 1;
+        text-align: center;
+        white-space: nowrap;
+        font-weight: 800;
+        font-size: 14px;
+        color: #fff;
+        opacity: 0;
+        padding-left: 15px;
+        padding-right: 5px;
+        transition: opacity 0.3s;
+        font-family: inherit;
+      }
+      
+      /* للكمبيوتر: تمدد عند التمرير */
+      @media (min-width: 769px) {
+        #mk-wa-widget:hover { width: 175px; }
+        #mk-wa-widget:hover .mk-wa-text { opacity: 1; transition-delay: 0.1s; }
+      }
+      
+      /* للجوال: تمدد تلقائي كل 10 ثوانٍ للفت الانتباه */
+      @media (max-width: 768px) {
+        #mk-wa-widget { animation: wa-auto-expand 10s infinite; bottom: 85px; }
+        #mk-wa-widget .mk-wa-text { animation: wa-text-show 10s infinite; }
+      }
+      @keyframes wa-auto-expand {
+        0%, 75%, 100% { width: 60px; }
+        80%, 95% { width: 165px; }
+      }
+      @keyframes wa-text-show {
+        0%, 75%, 100% { opacity: 0; }
+        82%, 95% { opacity: 1; }
+      }
+    `;
+    document.head.appendChild(waStyle);
+
+    const waBtn = document.createElement("a");
+    waBtn.id = "mk-wa-widget";
+    waBtn.href = `https://wa.me/${waNumber}`;
+    waBtn.target = "_blank";
+    waBtn.innerHTML = `
+      <div class="mk-wa-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+        </svg>
+      </div>
+      <div class="mk-wa-text">تحتاج مساعدة؟</div>
+    `;
+    document.body.appendChild(waBtn);
+  } catch(e) {}
+
+});

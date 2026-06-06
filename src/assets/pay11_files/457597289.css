@@ -1,0 +1,111 @@
+/* ===============================
+   1) الخلفيات في الوضع الداكن
+================================ */
+.da-bgg,
+.content--single-page.opt-text {
+  background: #1b1b1f !important;
+}
+
+/* ===============================
+   2) نصوص الوصف والصفحات
+================================ */
+.content-entry,
+.product__description {
+  color: #f0f0f0 !important;
+  line-height: 1.8;
+}
+
+.content-entry p,
+.content-entry li,
+.product__description p,
+.product__description li {
+  color: inherit !important;
+}
+
+/* الروابط داخل الوصف */
+.content-entry a,
+.product__description a {
+  color: #ffb400 !important;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* ===============================
+   3) الفوتر – نص أبيض (بدون footer *)
+================================ */
+footer,
+footer p,
+footer a,
+footer span,
+footer li,
+footer small,
+footer h1,
+footer h2,
+footer h3,
+footer h4,
+footer h5,
+footer h6 {
+  color: #fff !important;
+}
+
+/* ===============================
+   4) صناديق الأقساط (تمارا – إمكان – مدفوع)
+================================ */
+salla-installment .s-installment-madfu-wrapper,
+salla-installment .s-installment-emkan-wrapper,
+salla-installment .s-installment-tamara-wrapper {
+  background: #22223a !important;
+  border: 1px solid #444 !important;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+salla-installment .s-installment-madfu-content,
+salla-installment .s-installment-emkan-content,
+salla-installment .s-installment-tamara-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+salla-installment .s-installment-madfu-content-text,
+salla-installment .s-installment-emkan-content-text,
+salla-installment .s-installment-tamara-content-text {
+  color: #fff !important;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+salla-installment .s-installment-madfu-content img,
+salla-installment .s-installment-emkan-content img,
+salla-installment .s-installment-tamara-content img {
+  width: 85px !important;
+  height: auto !important;
+  margin: 0 0 0.5rem 0;
+  background: #fff;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+/* ===============================
+   5) لون العملة (﷼)
+================================ */
+.price__currency,
+.s-amount-currency,
+.product-price__currency,
+.product-price .currency,
+.product-price span.currency,
+.product-prices .currency {
+  color: #fff !important;
+}
+
+/* ===============================
+   6) تحسين القراءة للجوال
+================================ */
+@media (max-width: 480px) {
+  .content-entry p,
+  .product__description p {
+    font-size: 1rem !important;
+  }
+}
