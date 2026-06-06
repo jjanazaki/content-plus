@@ -1,0 +1,91 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #0b011f;
+  padding: 35px 30px;
+  position: relative;
+}
+
+/* LEFT */
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.cart-icon,
+.user-icon {
+  position: relative;
+  cursor: pointer;
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: crimson;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+/* CENTER */
+
+.nav-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.logo {
+  height: 70px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* RIGHT */
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  direction: rtl;
+}
+
+.nav-icon {
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.menu-btn span {
+  color: white;
+  font-size: 16px;
+}
+
+/* General */
+
+.navbar * {
+  color: white;
+}

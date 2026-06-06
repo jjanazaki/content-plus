@@ -1,0 +1,60 @@
+/* 1. THE GLOBAL RESET (*)
+   Applies to every single element on the page. */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Prevents padding/borders from breaking element widths */
+}
+
+/* 2. THE BODY SCRIPT
+   Controls the overall page layout, typography, and background. */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; /* Clean, modern font stack */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  min-height: 100vh; /* Ensures the body spans the full height of the screen */
+  line-height: 1.5;  /* Improves text readability across the app */
+  overflow-x: hidden; /* Prevents accidental horizontal scrolling */
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVE STYLES (For screens 768px and below)
+   ========================================================================== */
+@media screen and (max-width: 768px) {
+  
+  /* Global app adjustments */
+  body, #root, .app {
+    padding: 10px; /* Reduces large desktop padding on mobile screens */
+    font-size: 14px; /* Slightly scales down text for readability */
+  }
+
+  /* Structural layouts (Changes multi-column grids/flexboxes to single column) */
+  .container, 
+  .grid-layout, 
+  .main-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0 15px;
+    gap: 20px; /* Keeps even spacing between stacked sections */
+  }
+
+  /* Images and Media (Prevents large assets from breaking the layout width) */
+  img, 
+  video, 
+  .responsive-media {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Forms and Inputs (Makes buttons and fields easier to tap on touchscreens) */
+  input, 
+  button, 
+  .btn {
+    width: 100%; /* Stacks buttons vertically at full width */
+    padding: 12px; /* Increases touch target size */
+  }
+
+}

@@ -1,0 +1,134 @@
+/* Custom Scrollbar Styles for Chrome, Edge, Safari, and Opera (Main Page Vertical Scrollbar) */
+::-webkit-scrollbar {
+  width: 4px;               
+}
+
+::-webkit-scrollbar-track {
+  background: #0b011f;      
+}
+
+::-webkit-scrollbar-thumb {
+  background: #f1a002;      
+  border-radius: 4px;       
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d48b00;      
+}
+
+/* Custom Scrollbar Styles for Firefox */
+html {
+  scrollbar-width: thin;             
+  scrollbar-color: #f1a002 #0b011f;   
+}
+
+/* Reset browser defaults to prevent unwanted scrolling/gaps */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background-color: #0b011f; 
+  overflow-x: hidden; 
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Page wrapper tracking the full column flow */
+.home-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Container holding the stacked images */
+.bg-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Images fill the screen width completely, height adjusts naturally */
+.bg-img {
+  width: 100%;
+  height: auto;       
+  display: block;     
+  object-fit: fill;   
+}
+
+/* --- HORIZONTAL CARDS SECTION --- */
+.cards-section {
+  width: 100%;
+  background-color: #0b011f;
+  padding: 40px 0;           
+  overflow: hidden; 
+  position: relative;
+}
+
+.cards-container {
+  display: flex;
+  gap: 24px;                 
+  width: 100%; 
+  padding: 0 40px;           
+  overflow-x: auto;          /* Allows you to manually swipe/scroll anytime */
+  scroll-behavior: smooth;
+  
+  /* Completely hides horizontal scrollbar while keeping drag/swipe properties active */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+/* Hide horizontal scrollbar for Chrome, Safari and Opera */
+.cards-container::-webkit-scrollbar {
+  display: none;
+}
+
+.card {
+  width: 320px;              /* Restored original sizing layout */
+  flex-shrink: 0;            
+  background: #0b011f;       
+  border: none;              
+  padding: 20px;             
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Massive targeted image sizing */
+.card-img {
+  width: 260px;              
+  height: 260px;             
+  object-fit: contain;
+  margin-bottom: 16px;       
+}
+
+.card-title {
+  color: #f1a002;            
+  font-size: 1.25rem;        
+  margin-bottom: 8px;        
+  font-weight: 600;  
+  unicode-bidi: isolate;     /* Ensures safe mixed text isolation */
+}
+
+.card-desc {
+  color: #ffffff;            
+  font-size: 0.9rem;         
+  line-height: 1.4;          
+  opacity: 0.85;             
+  unicode-bidi: isolate;     /* Ensures safe mixed text isolation */
+}
+
+/* The space section directly below everything */
+.space-below {
+  width: 100%;
+  min-height: 100vh;        
+  background-color: #ffffff; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
